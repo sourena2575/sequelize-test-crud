@@ -1,6 +1,7 @@
 const Sequelize = require("sequelize");
 const connection = require("../connection/connection");
 const bcrypt = require("bcryptjs");
+const Post = require("./Post");
 // user model
 const User = connection.define(
   "User",
@@ -54,5 +55,5 @@ const User = connection.define(
     },
   }
 );
-
+User.hasMany(Post);
 module.exports = User;

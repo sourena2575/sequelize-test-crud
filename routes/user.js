@@ -1,16 +1,24 @@
 const express = require("express");
-const User = require("../models/User");
 const router = express.Router();
-
-router.get("/", (req, res) => {
-  User.findAll()
-    .then((users) => {
-      res.json(users);
-    })
-    .catch((e) => {
-      console.log(e);
-      res.status(400).send(error);
+const User = require("../models/User");
+router.post("/", (req, res) => {
+  User.create(req.body)
+    .then((users) => res.json(users))
+    .catch((er) => {
+      console.log(er);
+      res.status(400).json(er);
     });
+});
+
+router.delete("/:id", (req, res) => {
+  User.findOne({ where: { id: req.params.id } }).then((user) => {
+    user
+      .destroy()
+      .then(() => res.json("deleted"))
+      .catch((er) => {
+        console.log(er);
+      });
+  });
 });
 
 module.exports = router;
