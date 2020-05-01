@@ -3,9 +3,9 @@ const connection = require("../connection/connection");
 
 //post model
 
-const Post = connection.define("posts", {
+const Profile = connection.define("profile", {
   name: Sequelize.STRING,
-  text: Sequelize.TEXT,
+  image: Sequelize.STRING,
 });
 
-module.exports = Post;
+module.exports = Profile;

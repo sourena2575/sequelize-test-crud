@@ -2,6 +2,7 @@ const Sequelize = require("sequelize");
 const connection = require("../connection/connection");
 const bcrypt = require("bcryptjs");
 const Post = require("./Post");
+const Profile = require("./Profile");
 // user model
 const User = connection.define(
   "User",
@@ -10,17 +11,17 @@ const User = connection.define(
       type: Sequelize.STRING,
       defaultValue: "Amir",
       allowNull: false,
-      validate: {
-        startWithUpper: (val) => {
-          let first = val.charAt(0);
-          let startWithUpper = first === first.toUpperCase();
-          if (!startWithUpper) {
-            throw new Error("first letter must be upper case");
-          } else {
-            //...
-          }
-        },
-      },
+      // validate: {
+      //  startWithUpper: (val) => {
+      //   let first = val.charAt(0);
+      //  let startWithUpper = first === first.toUpperCase();
+      //  if (!startWithUpper) {
+      //     throw new Error("first letter must be upper case");
+      //   } else {
+      //...
+      //  }
+      //  },
+      //},
     },
     email: {
       type: Sequelize.STRING,
@@ -32,7 +33,7 @@ const User = connection.define(
       defaultValue: "12345",
       validate: {
         len: {
-          args: [6, 20],
+          args: [6, 100],
           msg: "Length Of Password must be atleast 6",
         },
       },
@@ -46,14 +47,16 @@ const User = connection.define(
       afterValidate: (user) => {
         user.password = bcrypt.hashSync(user.password, 8);
       },
-      beforeCreate: () => {
-        //...
-      },
-      afterCreate: () => {
-        //...
+      beforeUpdate: (user) => {
+        user.password = bcrypt.hashSync(user.password, 8);
       },
     },
   }
 );
-User.hasMany(Post);
+User.hasMany(Post, {
+  onDelete: "cascade",
+});
+User.hasOne(Profile, {
+  onDelete: "cascade",
+});
 module.exports = User;
